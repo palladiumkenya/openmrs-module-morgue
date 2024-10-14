@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ 
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+	<!-- Create morgue_deceased table -->
+    <changeSet id="morgue-new-table-morgue_deceased-2024-10-06-12-21" author="pwaweru">
+		<preConditions onFail="MARK_RAN">
+			<not><tableExists tableName="morgue_deceased"/></not>
+		</preConditions>
+		<comment>
+			Creating the morgue_deceased table
+		</comment>
+        <createTable tableName="morgue_deceased">
+            <column name="id" autoIncrement="true" type="int">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="uuid" type="char(38)">
+                <constraints nullable="false" unique="true" />
+            </column>
+            <column name="patient_id" type="int">
+                <constraints nullable="false" foreignKeyName="fk_morgue_patient" references="patient(patient_id)"  unique="true" />
+            </column>
+            <column name="date_of_admission" type="date"/>
+            <column name="sex" type="varchar(6)"/>
+            <column name="residence" type="varchar(255)"/>
+            <column name="age" type="int"/>
+            <column name="time_of_death" type="timestamp"/>
+            <column name="tag_number" type="varchar(50)"/>
+            <column name="ob_number_for_police_case" type="varchar(50)"/>
+            <column name="date_of_death" type="date"/>
+            <column name="time_of_admission" type="timestamp"/>
+            <column name="discharge" type="boolean"/>
+            <column name="date_of_discharge" type="date"/>
+            <column name="next_of_kin_name" type="varchar(255)"/>
+            <column name="amount_paid" type="double"/>
+            <column name="burial_permit_serial_number" type="varchar(100)"/>
+            <column name="next_of_kin_id" type="varchar(50)"/>
+            <column name="relationship_with_next_of_kin" type="varchar(50)"/>
+
+            <column name="creator" type="int"/>
+            <column name="date_created" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="changed_by" type="int"/>
+            <column name="date_changed" type="datetime"/>
+            <column defaultValueBoolean="false" name="voided" type="boolean">
+                <constraints nullable="true"/>
+            </column>
+            <column name="voided_by" type="int"/>
+            <column name="date_voided" type="datetime"/>
+            <column name="voided_reason" type="varchar(255)"/>
+        </createTable>
+    </changeSet>
+
+    <!-- Add foreign key constraint to patient table -->
+    <changeSet id="morgue-new-fk-fk_morgue_patient-2024-10-06-13-21" author="pwaweru">
+		<preConditions onFail="MARK_RAN">
+            <not>
+                <foreignKeyConstraintExists foreignKeyName="fk_morgue_patient"/>
+            </not>
+        </preConditions>
+        <addForeignKeyConstraint baseTableName="morgue_deceased"
+                                 baseColumnNames="patient_id"
+                                 referencedTableName="patient"
+                                 referencedColumnNames="patient_id"
+                                 constraintName="fk_morgue_patient"/>
+    </changeSet>
+
+    <!-- Create indexes for commonly queried columns -->
+    <changeSet id="morgue-new-index-patient-2024-10-06-14-21" author="pwaweru">
+		<preConditions onFail="MARK_RAN">
+            <not>
+                <indexExists indexName="idx_morgue_deceased_patient" tableName="morgue_deceased"/>
+            </not>
+        </preConditions>
+        <createIndex tableName="morgue_deceased" indexName="idx_morgue_deceased_patient">
+            <column name="patient_id"/>
+        </createIndex>
+	</changeSet>
+
+	<changeSet id="morgue-new-index-date_of_admission-2024-10-06-15-21" author="pwaweru">
+		<preConditions onFail="MARK_RAN">
+            <not>
+                <indexExists indexName="idx_morgue_deceased_date_of_admission" tableName="morgue_deceased"/>
+            </not>
+        </preConditions>
+        <createIndex tableName="morgue_deceased" indexName="idx_morgue_deceased_date_of_admission">
+            <column name="date_of_admission"/>
+        </createIndex>
+    </changeSet>
+
+    <!--Adding a new visit type named morgue-->
+    <changeSet id="morgue-new-visit-type-morgue-2024-10-14-15-25" author="pwaweru">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                SELECT COUNT(*) FROM visit_type
+                WHERE name = 'Morgue'
+                And uuid = '02b67c47-6071-4091-953d-ad21452e830c'
+            </sqlCheck>
+        </preConditions>
+        <comment>Inserting a new visit type named 'morgue' into 'visit_type' table</comment>
+        <insert tableName="visit_type">
+            <column name="name" value="Morgue" />
+            <column name="description" value="Visit where the patient is admitted to the morgue" />
+            <column name="uuid" value="02b67c47-6071-4091-953d-ad21452e830c" />
+        </insert>
+    </changeSet>
+ 
+</databaseChangeLog>
