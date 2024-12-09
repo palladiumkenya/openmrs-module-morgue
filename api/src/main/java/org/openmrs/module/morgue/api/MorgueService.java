@@ -14,7 +14,8 @@ import org.openmrs.api.APIException;
 import org.openmrs.api.OpenmrsService;
 import org.openmrs.module.morgue.MorgueConfig;
 import org.springframework.transaction.annotation.Transactional;
-import org.openmrs.module.morgue.api.model.MorgueDeceased;
+
+// import org.openmrs.module.morgue.api.model.MorgueDeceased;
 
 /**
  * The main service of this module, which is exposed for other modules. See
@@ -22,27 +23,27 @@ import org.openmrs.module.morgue.api.model.MorgueDeceased;
  */
 public interface MorgueService extends OpenmrsService {
 	
-	/**
-	 * Returns a Deceased by uuid. It can be called by any authenticated user. It is fetched in read
-	 * only transaction.
-	 * 
-	 * @param uuid
-	 * @return
-	 * @throws APIException
-	 */
-	@Authorized()
-	@Transactional(readOnly = true)
-	MorgueDeceased getDeceasedByUuid(String uuid) throws APIException;
+	// /**
+	//  * Returns a Deceased by uuid. It can be called by any authenticated user. It is fetched in read
+	//  * only transaction.
+	//  * 
+	//  * @param uuid
+	//  * @return
+	//  * @throws APIException
+	//  */
+	// @Authorized()
+	// @Transactional(readOnly = true)
+	// MorgueDeceased getDeceasedByUuid(String uuid) throws APIException;
 	
-	/**
-	 * Saves a Deceased. Sets the owner to superuser, if it is not set. It can be called by users
-	 * with this module's privilege. It is executed in a transaction.
-	 * 
-	 * @param deceased
-	 * @return
-	 * @throws APIException
-	 */
-	@Authorized(MorgueConfig.MODULE_PRIVILEGE)
-	@Transactional
-	MorgueDeceased saveDeceased(MorgueDeceased deceased) throws APIException;
+	// /**
+	//  * Saves a Deceased. Sets the owner to superuser, if it is not set. It can be called by users
+	//  * with this module's privilege. It is executed in a transaction.
+	//  * 
+	//  * @param deceased
+	//  * @return
+	//  * @throws APIException
+	//  */
+	// @Authorized(MorgueConfig.MODULE_PRIVILEGE)
+	// @Transactional
+	// MorgueDeceased saveDeceased(MorgueDeceased deceased) throws APIException;
 }

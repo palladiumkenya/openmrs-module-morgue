@@ -12,7 +12,7 @@ package org.openmrs.module.morgue.api.dao;
 import org.hibernate.criterion.Restrictions;
 import org.openmrs.api.db.hibernate.DbSession;
 import org.openmrs.api.db.hibernate.DbSessionFactory;
-import org.openmrs.module.morgue.api.model.MorgueDeceased;
+// import org.openmrs.module.morgue.api.model.MorgueDeceased;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -26,13 +26,13 @@ public class MorgueDao {
 		return sessionFactory.getCurrentSession();
 	}
 	
-	public MorgueDeceased getDeceasedByUuid(String uuid) {
-		return (MorgueDeceased) getSession().createCriteria(MorgueDeceased.class).add(Restrictions.eq("uuid", uuid))
-		        .uniqueResult();
-	}
+	// public MorgueDeceased getDeceasedByUuid(String uuid) {
+	// 	return (MorgueDeceased) getSession().createCriteria(MorgueDeceased.class).add(Restrictions.eq("uuid", uuid))
+	// 	        .uniqueResult();
+	// }
 	
-	public MorgueDeceased saveDeceased(MorgueDeceased deceased) {
-		getSession().saveOrUpdate(deceased);
-		return deceased;
-	}
+	// public MorgueDeceased saveDeceased(MorgueDeceased deceased) {
+	// 	getSession().saveOrUpdate(deceased);
+	// 	return deceased;
+	// }
 }

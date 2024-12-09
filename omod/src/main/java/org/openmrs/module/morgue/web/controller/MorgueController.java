@@ -9,27 +9,47 @@
  */
 package org.openmrs.module.morgue.web.controller;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openmrs.PatientIdentifier;
+import org.openmrs.PatientIdentifierType;
 import org.openmrs.User;
+import org.openmrs.Visit;
+import org.openmrs.VisitType;
+import org.openmrs.annotation.Authorized;
+import org.openmrs.api.AdministrationService;
+import org.openmrs.api.PersonService;
 import org.openmrs.api.UserService;
+import org.openmrs.api.VisitService;
+import org.openmrs.api.context.Context;
+import org.openmrs.module.morgue.rest.controller.base.MorgueResourceController;
+import org.openmrs.module.webservices.rest.SimpleObject;
+import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
- * This class configured as controller using annotation and mapped with the URL of
- * 'module/morgue/morgueLink.form'.
+ * This class configured as controller using annotation
  */
-@Controller("${rootrootArtifactId}.MorgueController")
-@RequestMapping(value = "module/morgue/morgue.form")
+@Controller
+@RequestMapping(value = "/rest/" + RestConstants.VERSION_1 + MorgueResourceController.MORGUE_NAMESPACE)
+@Authorized
 public class MorgueController {
 	
 	/** Logger for this class and subclasses */
@@ -38,50 +58,34 @@ public class MorgueController {
 	@Autowired
 	UserService userService;
 	
-	/** Success form view name */
-	private final String VIEW = "/module/morgue/morgue";
-	
 	/**
-	 * Initially called after the getUsers method to get the landing form name
+	 * Gets a list of deceased patients in the morgue
 	 * 
-	 * @return String form view name
-	 */
-	@RequestMapping(method = RequestMethod.GET)
-	public String onGet() {
-		return VIEW;
-	}
-	
-	/**
-	 * All the parameters are optional based on the necessity
-	 * 
-	 * @param httpSession
-	 * @param anyRequestObject
-	 * @param errors
+	 * @param request
+	 * @param dateFrom - The From date
+	 * @param dateTo - The To date
 	 * @return
 	 */
-	@RequestMapping(method = RequestMethod.POST)
-	public String onPost(HttpSession httpSession, @ModelAttribute("anyRequestObject") Object anyRequestObject,
-	        BindingResult errors) {
+	@CrossOrigin(origins = "*", methods = { RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE,
+	        RequestMethod.OPTIONS })
+	@RequestMapping(method = RequestMethod.GET, value = "/deceased")
+	@ResponseBody
+	public Object getListOfDeceasedPatients(HttpServletRequest request, @RequestParam("dateFrom") String dateFrom,
+	        @RequestParam("dateTo") String dateTo) {
+		Set<SimpleObject> deceased = new LinkedHashSet<SimpleObject>();
+		VisitService service = Context.getVisitService();
+		VisitType morgueVisit = service.getVisitTypeByUuid("02b67c47-6071-4091-953d-ad21452e830c");
+		List<VisitType> visitTypes = new ArrayList<>();
+		visitTypes.add(morgueVisit);
+		List<Visit> visits = service.getVisits(visitTypes, null, null, null, null, null, null, null, null, false, false);
 		
-		if (errors.hasErrors()) {
-			// return error view
+		for (Visit visit : visits) {
+			SimpleObject model = new SimpleObject();
+			
+			model.put("patient", visit.getPatient().getUuid());
+			deceased.add(model);
 		}
 		
-		return VIEW;
+		return deceased;
 	}
-	
-	/**
-	 * This class returns the form backing object. This can be a string, a boolean, or a normal java
-	 * pojo. The bean name defined in the ModelAttribute annotation and the type can be just defined
-	 * by the return type of this method
-	 */
-	@ModelAttribute("users")
-	protected List<User> getUsers() throws Exception {
-		List<User> users = userService.getAllUsers();
-		
-		// this object will be made available to the jsp page under the variable name
-		// that is defined in the @ModuleAttribute tag
-		return users;
-	}
-	
 }
