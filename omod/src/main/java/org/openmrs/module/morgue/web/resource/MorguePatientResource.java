@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import org.openmrs.Patient;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9.PatientResource1_9;
+import org.openmrs.module.morgue.api.MorgueService;
 import org.openmrs.module.morgue.api.model.MorguePatient;
 import org.openmrs.module.morgue.rest.controller.base.MorgueResourceController;
 
@@ -156,40 +157,20 @@ public class MorguePatientResource extends PatientResource1_9 {
 	
 	@Override
 	protected AlreadyPaged<Patient> doSearch(RequestContext context) {
-		// String uuid = context.getRequest().getParameter("uuid");
-		// String status = context.getRequest().getParameter("status");
-	    // String type = context.getRequest().getParameter("type");
-	    // String withErrors = context.getRequest().getParameter("withErrors");
-		// String createdOnOrBeforeDateStr = context.getRequest().getParameter("createdOnOrBefore");
-		// String createdOnOrAfterDateStr = context.getRequest().getParameter("createdOnOrAfter");
+		String uuid = context.getRequest().getParameter("uuid");
+		String name = context.getRequest().getParameter("name");
+		String createdOnOrBeforeDateStr = context.getRequest().getParameter("createdOnOrBefore");
+		String createdOnOrAfterDateStr = context.getRequest().getParameter("createdOnOrAfter");
 		String dead = context.getRequest().getParameter("dead");
-	
-		// Date createdOnOrBeforeDate = StringUtils.isNotBlank(createdOnOrBeforeDateStr) ? (Date) ConversionUtil.convert(createdOnOrBeforeDateStr, Date.class) : null;
-		// Date createdOnOrAfterDate = StringUtils.isNotBlank(createdOnOrAfterDateStr) ? (Date) ConversionUtil.convert(createdOnOrAfterDateStr, Date.class) : null;
-	
-		PatientService patientService = Context.getPatientService();
-	
-	    List<Patient> result = new ArrayList<>();
-		// List<Patient> result = service.getPatients(uuid, status, type, withErrors, createdOnOrAfterDate, createdOnOrBeforeDate);
-
-		if(dead != null && dead.trim().equalsIgnoreCase("true")) {
-			List<Patient> allPatients = patientService.getAllPatients();
-
-			// Filter out dead patients
-			result = allPatients.stream()
-				.filter(patient -> patient.getDead() && !patient.getVoided())  // Filter patients where getDead() is true
-				.collect(Collectors.toList());
-		} else if(dead != null && dead.trim().equalsIgnoreCase("false")) {
-			List<Patient> allPatients = patientService.getAllPatients();
-
-			// Filter out alive patients
-			result = allPatients.stream()
-            .filter(patient -> !patient.getDead() && !patient.getVoided())  // Filter patients where getDead() is false
-            .collect(Collectors.toList());
-		} else {
-			result = patientService.getAllPatients();
-		}
-
+		
+		Date createdOnOrBeforeDate = StringUtils.isNotBlank(createdOnOrBeforeDateStr) ? (Date) ConversionUtil.convert(
+		    createdOnOrBeforeDateStr, Date.class) : null;
+		Date createdOnOrAfterDate = StringUtils.isNotBlank(createdOnOrAfterDateStr) ? (Date) ConversionUtil.convert(
+		    createdOnOrAfterDateStr, Date.class) : null;
+		
+		MorgueService service = Context.getService(MorgueService.class);
+		List<Patient> result = service.getPatients(dead, name, uuid, createdOnOrAfterDate, createdOnOrBeforeDate);
+		
 		return new AlreadyPaged<Patient>(context, result, false);
 	}
 }

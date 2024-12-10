@@ -34,7 +34,13 @@
         </property>
         <property name="target">
             <bean class="org.openmrs.module.morgue.api.impl.MorgueServiceImpl">
-                <property name="dao" ref="morgue.MorgueDao" />
+                <property name="dao">
+                    <bean class="org.openmrs.module.morgue.api.dao.MorgueDao">
+                        <property name="sessionFactory">
+                            <ref bean="sessionFactory" />
+                        </property>
+                    </bean>
+                </property>
             </bean>
         </property>
         <property name="preInterceptors">

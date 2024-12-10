@@ -55,8 +55,8 @@
         </createTable>
     </changeSet>
 
-    <!-- Add foreign key constraint to patient table -->
-    <changeSet id="morgue-new-fk-fk_morgue_patient-2024-10-06-13-21" author="pwaweru">
+    <!-- Add foreign key constraint to morgue_patient table -->
+    <!-- <changeSet id="morgue-new-fk-fk_morgue_patient-2024-10-06-13-21" author="pwaweru">
 		<preConditions onFail="MARK_RAN">
             <not>
                 <foreignKeyConstraintExists foreignKeyName="fk_morgue_patient"/>
@@ -67,7 +67,7 @@
                                  referencedTableName="patient"
                                  referencedColumnNames="patient_id"
                                  constraintName="fk_morgue_patient"/>
-    </changeSet>
+    </changeSet> -->
 
     <!-- Create indexes for commonly queried columns -->
     <changeSet id="morgue-new-index-patient-2024-10-06-14-21" author="pwaweru">
@@ -93,7 +93,7 @@
     </changeSet>
 
     <!--Adding a new visit type named morgue-->
-    <changeSet id="morgue-new-visit-type-morgue-2024-10-14-15-25" author="pwaweru">
+    <!-- <changeSet id="morgue-new-visit-type-morgue-2024-10-14-15-25" author="pwaweru">
         <preConditions onFail="MARK_RAN">
             <sqlCheck expectedResult="0">
                 SELECT COUNT(*) FROM visit_type
@@ -106,7 +106,11 @@
             <column name="name" value="Morgue" />
             <column name="description" value="Visit where the patient is admitted to the morgue" />
             <column name="uuid" value="02b67c47-6071-4091-953d-ad21452e830c" />
+
+            <column name="creator" value=2 />
+            <column name="date_created" valueComputed="NOW()" />
+            <column name="retired" value=0 />
         </insert>
-    </changeSet>
+    </changeSet> -->
  
 </databaseChangeLog>
