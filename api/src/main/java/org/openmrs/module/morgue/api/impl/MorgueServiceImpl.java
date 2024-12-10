@@ -39,7 +39,7 @@ public class MorgueServiceImpl extends BaseOpenmrsService implements MorgueServi
 	}
 	
 	@Override
-	public List<Patient> getPatients(String dead, String name, String uuid, Date createdOnOrAfterDate,
+	public List<Object[]> getPatients(String dead, String name, String uuid, Date createdOnOrAfterDate,
 	        Date createdOnOrBeforeDate) {
 		return dao.getPatients(dead, name, uuid, createdOnOrAfterDate, createdOnOrBeforeDate);
 	}

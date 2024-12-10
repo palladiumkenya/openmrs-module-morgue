@@ -24,5 +24,5 @@ import org.openmrs.Patient;
  */
 public interface MorgueService extends OpenmrsService {
 	
-	List<Patient> getPatients(String dead, String name, String uuid, Date createdOnOrAfterDate, Date createdOnOrBeforeDate);
+	List<Object[]> getPatients(String dead, String name, String uuid, Date createdOnOrAfterDate, Date createdOnOrBeforeDate);
 }
