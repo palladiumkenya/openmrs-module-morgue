@@ -12,7 +12,9 @@ package org.openmrs.module.morgue.api.impl;
 import org.openmrs.api.APIException;
 import org.openmrs.api.UserService;
 import org.openmrs.api.impl.BaseOpenmrsService;
-import org.openmrs.module.morgue.api.model.MorgueDeceased;
+import java.util.Date;
+import java.util.List;
+import org.openmrs.Patient;
 import org.openmrs.module.morgue.api.MorgueService;
 import org.openmrs.module.morgue.api.dao.MorgueDao;
 
@@ -37,12 +39,9 @@ public class MorgueServiceImpl extends BaseOpenmrsService implements MorgueServi
 	}
 	
 	@Override
-	public MorgueDeceased getDeceasedByUuid(String uuid) throws APIException {
-		return dao.getDeceasedByUuid(uuid);
+	public List<Object[]> getPatients(String dead, String name, String uuid, Date createdOnOrAfterDate,
+	        Date createdOnOrBeforeDate) {
+		return dao.getPatients(dead, name, uuid, createdOnOrAfterDate, createdOnOrBeforeDate);
 	}
 	
-	@Override
-	public MorgueDeceased saveDeceased(MorgueDeceased deceased) throws APIException {
-		return dao.saveDeceased(deceased);
-	}
 }
